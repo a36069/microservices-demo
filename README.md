@@ -44,13 +44,13 @@ For those who want to quickly run the Online Boutique application without settin
 2. R‍un the Docker Compose command:
 
    ```sh
-   ‍docker-compose up 
+   ‍docker-compose up -d
 Once all services have started, you can access the Online Boutique web frontend at http://localhost:8080 or the port specified in the docker-compose.yml for the frontend service.
 
 ### Shutting Down
 To stop the running containers and remove the created network:
 
-    docker-compose down
+    docker-compose down -v
 
 ## Interactive quickstart (GKE)
 
