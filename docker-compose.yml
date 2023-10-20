@@ -1,0 +1,172 @@
+version: '3.8'
+
+networks:
+  microservices:
+  #  external: true
+
+volumes:
+  redis-cart-data:
+
+x-defaults: &default-config
+  networks:
+    - microservices
+
+services:
+  frontend:
+    <<: *default-config
+    # build:
+    #   context: ./src/frontend
+    #   dockerfile: Dockerfile
+    image: gcr.io/google-samples/microservices-demo/frontend:v0.8.0
+    ports:
+      - "8080:8080"
+    environment:
+      PORT: "8080"
+      PRODUCT_CATALOG_SERVICE_ADDR: "productcatalogservice:3550"
+      CURRENCY_SERVICE_ADDR: "currencyservice:7000"
+      CART_SERVICE_ADDR: "cartservice:7070"
+      RECOMMENDATION_SERVICE_ADDR: "recommendationservice:8080"
+      SHIPPING_SERVICE_ADDR: "shippingservice:50051"
+      CHECKOUT_SERVICE_ADDR: "checkoutservice:5050"
+      AD_SERVICE_ADDR: "adservice:9555"
+      ENABLE_PROFILER: "0"
+    depends_on:
+      - productcatalogservice
+      - currencyservice
+      - cartservice
+      - recommendationservice
+      - shippingservice
+      - checkoutservice
+      - adservice
+
+  checkoutservice:
+    <<: *default-config
+    # build:
+    #   context: ./src/checkoutservice
+    #   dockerfile: Dockerfile
+    image: gcr.io/google-samples/microservices-demo/checkoutservice:v0.8.0
+    ports:
+      - "5050:5050"
+    environment:
+      PORT: "5050"
+      PRODUCT_CATALOG_SERVICE_ADDR: "productcatalogservice:3550"
+      SHIPPING_SERVICE_ADDR: "shippingservice:50051"
+      PAYMENT_SERVICE_ADDR: paymentservice:50052
+      EMAIL_SERVICE_ADDR: emailservice:5000
+      CURRENCY_SERVICE_ADDR: "currencyservice:7000"
+      CART_SERVICE_ADDR: "cartservice:7070"
+    depends_on:
+      - productcatalogservice
+      - shippingservice
+      - paymentservice
+      - emailservice
+      - currencyservice
+      - cartservice
+
+  recommendationservice:
+    <<: *default-config
+    # build:
+    #   context: ./src/recommendationservice
+    #   dockerfile: Dockerfile  
+    image: gcr.io/google-samples/microservices-demo/recommendationservice:v0.8.0
+    ports:
+      - "8082:8080"
+    environment:
+      PORT: "8080"
+      DISABLE_PROFILER: "1"
+      PRODUCT_CATALOG_SERVICE_ADDR: "productcatalogservice:3550"
+    depends_on:
+      - productcatalogservice
+    
+  cartservice:
+    <<: *default-config
+    # build:
+    #   context: ./src/cartservice/src
+    #   dockerfile: Dockerfile
+    image: gcr.io/google-samples/microservices-demo/cartservice:v0.8.0
+    ports:
+      - "7070:7070"
+    environment:
+      PORT: "7070"
+      REDIS_ADDR: "redis-cart:6379"
+    depends_on:
+      - redis-cart
+
+  redis-cart:
+    image: redis:7.2.1
+    networks:
+      - microservices
+    volumes:
+      - redis-cart-data:/data
+
+  adservice:
+    <<: *default-config
+    # build:
+    #   context: ./src/adservice
+    #   dockerfile: Dockerfile
+    image: gcr.io/google-samples/microservices-demo/adservice:v0.8.0
+    ports:
+      - "9555:9555"
+    environment:
+      PORT: "9555"
+      
+  currencyservice:
+    <<: *default-config
+    # build:
+    #   context: ./src/currencyservice
+    #   dockerfile: Dockerfile
+    image: gcr.io/google-samples/microservices-demo/currencyservice:v0.8.0 
+    ports:
+      - "7000:7000"
+    environment:
+      PORT: "7000"
+      DISABLE_PROFILER: "1"
+
+  emailservice:
+    <<: *default-config
+    # build:
+    #   context: ./src/emailservice
+    #   dockerfile: Dockerfile  
+    image: gcr.io/google-samples/microservices-demo/emailservice:v0.8.0
+    ports:
+      - "5000:8080"
+    environment:
+      PORT: "8080"
+      DISABLE_PROFILER: "1"
+
+  paymentservice:
+    <<: *default-config
+    # build:
+    #   context: ./src/paymentservice
+    #   dockerfile: Dockerfile  
+    image: gcr.io/google-samples/microservices-demo/paymentservice:v0.8.0
+    ports:
+      - "50052:50052"
+    environment:
+      PORT: "50052"
+      DISABLE_PROFILER: "1"
+
+  productcatalogservice:
+    <<: *default-config
+    # build:
+    #   context: ./src/productcatalogservice
+    #   dockerfile: Dockerfile  
+    image: gcr.io/google-samples/microservices-demo/productcatalogservice:v0.8.0
+    ports:
+      - "3550:3550"
+    environment:
+      PORT: "3550"
+      DISABLE_PROFILER: "1"
+
+  shippingservice:
+    <<: *default-config
+    # build:
+    #   context: ./src/shippingservice
+    #   dockerfile: Dockerfile  
+    image: gcr.io/google-samples/microservices-demo/shippingservice:v0.8.0
+    ports:
+      - "50051:50051"
+    environment:
+      PORT: "50051"
+      DISABLE_PROFILER: "1"
+
