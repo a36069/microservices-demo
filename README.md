@@ -24,6 +24,34 @@ If you’re using this demo, please **★Star** this repository to show your int
 | ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
 | [![Screenshot of store homepage](/docs/img/online-boutique-frontend-1.png)](/docs/img/online-boutique-frontend-1.png) | [![Screenshot of checkout screen](/docs/img/online-boutique-frontend-2.png)](/docs/img/online-boutique-frontend-2.png) |
 
+## Running with Docker Compose
+
+For those who want to quickly run the Online Boutique application without setting up a Kubernetes cluster, Docker Compose offers a way to define and run multi-container applications. Follow these steps to run the Online Boutique using Docker Compose:
+
+### Prerequisites
+
+1. Ensure you have Docker and Docker Compose installed:
+   - [Docker installation guide](https://docs.docker.com/get-docker/)
+   - [Docker Compose installation guide](https://docs.docker.com/compose/install/)
+
+### Steps to Run
+
+1. Clone the repository if you haven't already.
+
+   ```sh
+   git clone --single-branch --branch abdi/feat/compose https://github.com/a36069/microservices-demo.git
+   cd microservices-demo/
+2. R‍un the Docker Compose command:
+
+   ```sh
+   ‍docker-compose up 
+Once all services have started, you can access the Online Boutique web frontend at http://localhost:8080 or the port specified in the docker-compose.yml for the frontend service.
+
+### Shutting Down
+To stop the running containers and remove the created network:
+
+    docker-compose down
+
 ## Interactive quickstart (GKE)
 
 [![Open in Cloud Shell](https://gstatic.com/cloudssh/images/open-btn.svg)](https://ssh.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https%3A%2F%2Fgithub.com%2FGoogleCloudPlatform%2Fmicroservices-demo&shellonly=true&cloudshell_image=gcr.io/ds-artifacts-cloudshell/deploystack_custom_image)
